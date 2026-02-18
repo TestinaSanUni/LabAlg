@@ -9,7 +9,7 @@ from src.BST import BST
 from src.AVL import AVL
 from src.RBT import RBT
 
-# genera liste di valori in base ai casi di utilizzo
+# generazione sequenze numeriche
 def setup_sequence(size):
     sequence = list(range(size))
     return sequence
@@ -31,6 +31,7 @@ def insertion_test(sequence, randomized, tree, num_test):
 
         end = time.perf_counter()
         optime[0][j] = end - start
+        height_seq = tree.get_height(tree.root)
         tree.reset()
 
         # randomized test
@@ -41,11 +42,12 @@ def insertion_test(sequence, randomized, tree, num_test):
 
         end = time.perf_counter()
         optime[1][j] = end - start
+        height_rand = tree.get_height(tree.root)
         tree.reset()
 
     res_seq = statistics.median(optime[0])
     res_rand = statistics.median(optime[1])
-    return res_seq, res_rand
+    return res_seq, res_rand, height_seq, height_rand
 
 # test ricerca
 def search_test(sequence, randomized, search_target, tree, num_test):
@@ -84,49 +86,47 @@ def search_test(sequence, randomized, search_target, tree, num_test):
     return res_seq, res_rand
 
 # test manager
-def test_manager():
+def test_manager(pull, tests, inc):
     bst = BST()
     avl = AVL()
     rbt = RBT()
-    res1 = []
-    res2 = []
-    res3 = []
-    res4 = []
-    res5 = []
-    res6 = []
+    res1, res2, res3, res4, res5, res6 = [], [], [], [], [], []
 
-    # aumento la dimensione dei campioni di 10 in 10 fino a 1000
-    pull_size = 3000
-    num_test = 10
-    increment = 100
-
-    for items in range(increment, pull_size + 1, increment):
+    for items in range(inc, pull + 1, inc):
         # valori che popoleranno gli alberi per eseguire i test
         sequence = setup_sequence(items)
         randomized = setup_randomized(items)
 
-        res1.append(insertion_test(sequence, randomized, bst, num_test))
-        res2.append(insertion_test(sequence, randomized, avl, num_test))
-        res3.append(insertion_test(sequence, randomized, rbt, num_test))
+        res1.append(insertion_test(sequence, randomized, bst, tests))
+        res2.append(insertion_test(sequence, randomized, avl, tests))
+        res3.append(insertion_test(sequence, randomized, rbt, tests))
 
         search_target = setup_randomized(items)
-        res4.append(search_test(sequence, randomized, search_target, bst, num_test))
-        res5.append(search_test(sequence, randomized, search_target, avl, num_test))
-        res6.append(search_test(sequence, randomized, search_target, rbt, num_test))
+        res4.append(search_test(sequence, randomized, search_target, bst, tests))
+        res5.append(search_test(sequence, randomized, search_target, avl, tests))
+        res6.append(search_test(sequence, randomized, search_target, rbt, tests))
 
-        print("Elementi testati: ", items, "/", pull_size)
+        print("Elementi testati: ", items, "/", pull)
 
     # definizione colonne
     data = {
-        "Items1": list(range(increment, pull_size + 1, increment)),
+        "Items_insert": list(range(inc, pull + 1, inc)),
         "Insert_BST_Seq": [x[0] for x in res1],
         "Insert_BST_Rand": [x[1] for x in res1],
+        "Height_BST_Seq": [x[2] for x in res1],
+        "Height_BST_Rand": [x[3] for x in res1],
+
         "Insert_AVL_Seq": [x[0] for x in res2],
         "Insert_AVL_Rand": [x[1] for x in res2],
+        "Height_AVL_Seq": [x[2] for x in res2],
+        "Height_AVL_Rand": [x[3] for x in res2],
+
         "Insert_RBT_Seq": [x[0] for x in res3],
         "Insert_RBT_Rand": [x[1] for x in res3],
+        "Height_RBT_Seq": [x[2] for x in res3],
+        "Height_RBT_Rand": [x[3] for x in res3],
 
-        "Items2": list(range(increment, pull_size + 1, increment)),
+        "Items_research": list(range(inc, pull + 1, inc)),
         "Search_BST_Seq": [x[0] for x in res4],
         "Search_BST_Rand": [x[1] for x in res4],
         "Search_AVL_Seq": [x[0] for x in res5],
@@ -138,7 +138,7 @@ def test_manager():
     df = pd.DataFrame(data)
 
     # formattazione forzata a 8 cifre decimali
-    cols_to_format = df.columns.drop(["Items1", "Items2"])
+    cols_to_format = df.columns.drop(["Items_insert", "Items_research", "Height_BST_Seq", "Height_BST_Rand", "Height_AVL_Seq", "Height_AVL_Rand", "Height_RBT_Seq", "Height_RBT_Rand"])
     for col in cols_to_format:
         df[col] = df[col].map(lambda x: f"{x:.8f}")
 
@@ -147,4 +147,10 @@ def test_manager():
 
     print(f"\nRisultati salvati correttamente in: exp_results.csv\n")
 
-test_manager()
+# MAIN
+# dichiarazione variabili globali
+pull_size = 3000 # numero massimo di elementi da campionare
+num_test = 10 # qty test per ricavare la media
+increment = 50 # passo incrementale (definisce densità dei punti)
+
+test_manager(pull_size, num_test, increment)
