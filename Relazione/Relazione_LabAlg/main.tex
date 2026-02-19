@@ -1,0 +1,206 @@
+\documentclass{article}
+
+% Language setting
+\usepackage[italiano]{babel}
+
+% Set page size and margins
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath} % Pacchetto per la formattazione matematica avanzata
+\usepackage{array}   % Per una migliore gestione delle colonne
+\usepackage{subcaption}
+\usepackage{float}
+
+\title{BST vs AVL vs RBT}
+\author{Matteo Orlandi}
+
+\begin{document}
+\maketitle
+
+
+% ===================================================================================
+% INTRODUZIONE
+% ===================================================================================
+
+\section{Introduzione}
+In questa relazione verranno analizzate e confrontate le prestazioni di tre diverse strutture dati utilizzate per la gestione di insiemi dinamici. Le strutture che verranno analizzate sono: gli Alberi Binari di Ricerca (BST), gli alberi AVL e gli Alberi Rosso-Neri (RBT).
+
+La gestione ottimale dei dati è un obiettivo fondamentale quando si parla di strutture dati. Sebbene i BST offrano una struttura semplice e intuitiva per l'inserimento e la ricerca, le prestazioni ottenute dipendono fortemente dall'ordine dei dati in ingresso. Queste possono anche sfociare, nel caso peggiore, in liste collegate, perdendo ogni vantaggio della struttura iniziale.
+Per ovviare a questo problema, sono state introdotte strutture auto-bilancianti come gli alberi AVL e gli alberi Rosso-Neri, che garantiscono tempi di esecuzione logaritmici, indipendentemente dall'ordine dei dati in ingresso.
+
+L'esperimento che ne deriva mira a verificare sperimentalmente le complessità temporali delle operazioni di \textbf{inserimento} e \textbf{ricerca}, mettendo a confronto le tre strutture dati negli scenari del caso peggiore e del caso medio.
+
+
+% ===================================================================================
+% TEORIA
+% ===================================================================================
+
+\section{Teoria}
+Un albero è una struttura dati composta da un insieme di \textit{nodi} e \textit{archi}. Ogni nodo rappresenta un elemento dell'albero ed è composto da una chiave che lo identifica univocamente e da più puntatori, detti archi, che offrono un collegamento verso altri nodi, detti \textit{figli}.
+
+Il nodo principale, da cui ha origine l'intera struttura, prende il nome di \textit{radice}. Ogni nodo che non ha figli viene detto \textit{foglia}.
+Si dice \textit{cammino} un insieme di nodi e archi che devono essere attraversati per collegare un nodo a un altro. La lunghezza del cammino più lungo rappresenta l'\textit{altezza} dell'albero e viene misurata contando il numero di nodi che si incontrano lungo quel cammino (parte dalla radice e giunge a una foglia)
+
+\subsection{Binary Search Tree (BST)}
+Un Albero Binario di Ricerca è un tipo particolare di albero specializzato per la ricerca di valori. Ogni nodo avrà un puntatore sinistro che permette il collegamento a un sottoalbero contenente solo valori minori e uno destro che permette il collegamento a un sottoalbero contenente solo valori maggiori.
+
+Le operazioni di base richiedono un tempo proporzionale all'altezza $h$ dell'albero, ovvero $O(h)$.
+\begin{itemize}
+    \item \textbf{Caso Medio:} Se le chiavi vengono inserite in ordine casuale, l'altezza attesa dell'albero è $O(\log n)$.
+    \item \textbf{Caso Peggiore:} Se le chiavi vengono inserite in ordine crescente o decrescente, l'albero degenera in una lista concatenata di altezza $h = n - 1$. In questo scenario, le operazioni raggiungono una complessità $O(n)$, rendendo la struttura inefficiente.
+\end{itemize}
+
+\subsection{Alberi AVL}
+Gli alberi AVL sono alberi binari di ricerca \textbf{strettamente bilanciati in altezza}. Un albero AVL è bilanciato se, per ogni nodo $x$, le altezze dei sottoalberi sinistro e destro differiscono al massimo di 1. Per fare ciò, viene introdotto il \textit{Fattore di Bilanciamento} $BF(x)$, definito come:
+\begin{equation}
+    BF(x) = h(x.left) - h(x.right)
+\end{equation}
+Perché un albero sia AVL, deve valere che $BF(x) \in \{-1, 0, 1\}$ per ogni nodo. A causa di questo vincolo molto stringente, gli alberi AVL sfruttano al massimo l'ampiezza, ottenendo un'altezza massima limitata a circa $1.44 \lg n$. Nonostante abbiano un costo di inserimento non molto ottimizzato a causa dei frequenti controlli e delle rotazioni, il costo per la ricerca è ottimale.
+
+\subsection{Red-Black Tree (RBT)}
+Gli alberi Rosso-Neri hanno un funzionamento simile a quello degli AVL, ma il bilanciamento viene effettuato secondo limiti meno restrittivi. Ogni nodo contiene un bit supplementare di informazione che indica il colore (rosso o nero). Un albero Rosso-Nero, oltre a soddisfare le caratteristiche di un BST, deve soddisfare le seguenti proprietà:
+\begin{enumerate}
+    \item La radice è nera.
+    \item Ogni nodo è rosso o nero.
+    \item Ogni foglia (NIL) è nera.
+    \item Se un nodo è rosso, entrambi i suoi figli sono neri (non possono esserci due nodi rossi consecutivi).
+    \item Per ogni nodo, tutti i cammini semplici che scendono verso le foglie discendenti contengono lo stesso numero di nodi neri.
+\end{enumerate}
+
+In questo modo abbiamo la garanzia che il cammino più lungo non sia mai maggiore del doppio del cammino più breve. L'altezza dell'albero è perciò limitata a $2\lg(n+1)$, assicurando che il limite asintotico delle operazioni di inserimento e ricerca sia $O(\log n)$ anche nel caso peggiore.
+
+
+% ===================================================================================
+% ESPERIMENTO
+% ===================================================================================
+
+\section{Esperimento e risultati attesi}
+Tramite questo esperimento si vogliono verificare le complessità asintotiche esposte nella sezione teorica, misurando il tempo di esecuzione $T(n)$ al variare del numero di nodi $N$.
+
+\subsection{Scenari di Test e Complessità Attesa}
+Vengono definiti due scenari per confrontare le caratteristiche delle diverse strutture dati:
+
+\subsubsection*{Scenario A: Sequenza Ordinata (Caso Peggiore)}
+Vengono inseriti elementi in ordine strettamente crescente ($0, 1, ... , n$).
+\begin{itemize}
+    \item \textbf{BST:} Il risultato atteso è che l'albero degeneri, con altezza $h=n$. Il risultato asintotico sia per la costruzione che per la ricerca sarà $O(n)$.
+    \item \textbf{RBT e AVL:} Le strutture dovrebbero bilanciarsi sfruttando le rotazioni e mantenendo un'altezza logaritmica e prestazioni $O(\log n)$.
+\end{itemize}
+
+\subsubsection*{Scenario B: Sequenza Casuale (Caso Medio)}
+Vengono inseriti elementi casuali, generati secondo una distribuzione uniforme. Il risultato atteso è che tutte le strutture (BST, AVL e RBT) mantengano un'altezza logaritmica, con prestazioni comparabili $O(\log n)$.
+
+\subsection{Tabella riassuntiva}
+La Tabella che segue riassume i risultati asintotici attesi e che dovranno essere verificati tramite i grafici derivanti dai test.
+
+\begin{table}[h!]
+    \centering
+    % gestore altezza righe
+    \renewcommand{\arraystretch}{1.9} 
+    
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Struttura} & \textbf{Operazione} & \textbf{Caso Peggiore (Ordinato)} & \textbf{Caso Medio (Random)} \\
+        \hline
+        BST & Inserimento & $\mathcal{O}(n)$ & $\mathcal{O}(\log n)$ \\
+        \hline
+        BST & Ricerca & $\mathcal{O}(n)$ & $\mathcal{O}(\log n)$ \\
+        \hline
+        AVL & Inserimento & $\mathcal{O}(\log n)$ & $\mathcal{O}(\log n)$ \\
+        \hline
+        AVL & Ricerca & $\mathcal{O}(\log n)$ & $\mathcal{O}(\log n)$ \\
+        \hline
+        RBT & Inserimento & $\mathcal{O}(\log n)$ & $\mathcal{O}(\log n)$ \\
+        \hline
+        RBT & Ricerca & $\mathcal{O}(\log n)$ & $\mathcal{O}(\log n)$ \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Mi aspetto che gli AVL, essendo più bilanciati, avranno tempi di ricerca migliori al crescere di N rispetto agli RBT, mentre gli BST risulteranno i più veloci per l'inserimento di valori casuali a causa della mancanza di controlli e di rotazioni.
+
+
+% ===================================================================================
+% RISULTATI ESPERIMENTO
+% ===================================================================================
+
+\section{Risultati esperimento}
+
+\subsection{Tempi di inserimento}
+\begin{figure}[htbp]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{pics/insert_seq_graph.png} 
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill % separatore delle immagini
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{pics/insert_rand_graph.png}
+        \label{fig:sub2}
+    \end{subfigure}
+    
+    \caption{Tempi di inserimento di N elementi. Nel caso a gli elementi sono ordinati, nel caso b gli elementi sono randomici.}
+    \label{fig:coppia_immagini}
+\end{figure}
+
+\subsection{Altezza alberi}
+\begin{figure}[htbp]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{pics/height_seq_graph.png} 
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill % separatore delle immagini
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{pics/height_rand_graph.png}
+        \label{fig:sub2}
+    \end{subfigure}
+    
+    \caption{Confronto altezze per gli inserimenti. Nel caso a gli elementi sono ordinati, nel caso b gli elementi sono randomici.}
+    \label{fig:coppia_immagini}
+\end{figure}
+
+\subsection{Tempi di ricerca}
+\begin{figure}[htbp]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{pics/search_seq_graph.png} 
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill % separatore delle immagini
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{pics/search_rand_graph.png}
+        \label{fig:sub2}
+    \end{subfigure}
+    
+    \caption{Tempi di ricerca di N elementi. Nel caso a gli elementi sono ordinati, nel caso b gli elementi sono randomici.}
+    \label{fig:coppia_immagini}
+\end{figure}
+
+% ===================================================================================
+% CONCLUSIONI
+% ===================================================================================
+
+\section{Conclusioni}
+
+Osservando i risultati dei test effettuati, possiamo notare che, per quanto riguarda il caso peggiore, le prestazioni sia per l'inserimento che per la ricerca calano drasticamente se implementate utilizzando un albero binario di ricerca. Lo stesso vale per l'altezza dell'albero, in quanto l'input particolare azzera tutti i vantaggi che un BST offrirebbe, sfociando in una lista concatenata.
+Analizzando invece il caso medio, l'albero binario di ricerca, seppur con prestazioni peggiori, tende a replicare i vantaggi delle altre due tipologie di alberi. Le differenze tra le varie strutture dati si assottigliano molto, ottenendo asintoticamente gli stessi risultati.
+
+Nel complesso, RBT rimane comunque la scelta migliore tra le 3, riuscendo a mitigare le caratteristiche di velocità di un BST, noncurante del bilanciamento della struttura complessiva, con quelle di organizzazione in memoria di un AVL, rigido per ottimizzare il più possibile la ricerca.
+
+\end{document}
+
