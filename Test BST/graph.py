@@ -17,16 +17,15 @@ def graph_comparison(title, cols, name, y_label):
     df[cols[2]] = pd.to_numeric(df[cols[2]])
 
     # definizione legenda
-    plt.plot(df["Items_insert"], df[cols[0]], label = "BST")
-    plt.plot(df["Items_insert"], df[cols[1]], label = "AVL")
-    plt.plot(df["Items_insert"], df[cols[2]], label = "RBT")
+    plt.plot(df["Items_insert(N)"], df[cols[0]], label = "BST")
+    plt.plot(df["Items_insert(N)"], df[cols[1]], label = "AVL")
+    plt.plot(df["Items_insert(N)"], df[cols[2]], label = "RBT")
 
     plt.title(title)
     plt.xlabel("Elementi(N)")
     plt.ylabel(y_label)
     plt.legend()
     plt.grid(True)
-    plt.savefig(name)
 
     # salvataggio nella cartella e chiusura
     save_path = os.path.join(output_folder, name)
@@ -34,12 +33,13 @@ def graph_comparison(title, cols, name, y_label):
     plt.close()
 
 # Esempio per confrontare i casi sequenziali
-graph_comparison("Inserimento - Caso Sequenziale", ["Insert_BST_Seq", "Insert_AVL_Seq", "Insert_RBT_Seq"], "insert_seq_graph.png", "Tempo(s)")
-graph_comparison("Inserimento - Caso Randomizzato", ["Insert_BST_Rand", "Insert_AVL_Rand", "Insert_RBT_Rand"], "insert_rand_graph.png", "Tempo(s)")
-graph_comparison("Altezza - Caso sequenziale", ["Height_BST_Seq", "Height_AVL_Seq", "Height_RBT_Seq"], "height_seq_graph.png", "Altezza(h)")
-graph_comparison("Altezza - Caso Randomizzato", ["Height_BST_Rand", "Height_AVL_Rand", "Height_RBT_Rand"], "height_rand_graph.png", "Altezza(h)")
+# Esempio per confrontare i casi sequenziali
+graph_comparison("Inserimento - Caso Sequenziale", ["Insert_BST_Seq(ms)", "Insert_AVL_Seq(ms)", "Insert_RBT_Seq(ms)"], "insert_seq_graph.png", "Tempo(ms)")
+graph_comparison("Inserimento - Caso Randomizzato", ["Insert_BST_Rand(ms)", "Insert_AVL_Rand(ms)", "Insert_RBT_Rand(ms)"], "insert_rand_graph.png", "Tempo(ms)")
+graph_comparison("Altezza - Caso sequenziale", ["Height_BST_Seq(N)", "Height_AVL_Seq(N)", "Height_RBT_Seq(N)"], "height_seq_graph.png", "Altezza(h)")
+graph_comparison("Altezza - Caso Randomizzato", ["Height_BST_Rand(N)", "Height_AVL_Rand(N)", "Height_RBT_Rand(N)"], "height_rand_graph.png", "Altezza(h)")
 
-graph_comparison("Ricerca - Caso Sequenziale", ["Search_BST_Seq", "Search_AVL_Seq", "Search_RBT_Seq"], "search_seq_graph.png", "Tempo(s)")
-graph_comparison("Ricerca - Caso Randomizzato", ["Search_BST_Rand", "Search_AVL_Rand", "Search_RBT_Rand"], "search_rand_graph.png", "Tempo(s)")
+graph_comparison("Ricerca - Caso Sequenziale", ["Search_BST_Seq(ms)", "Search_AVL_Seq(ms)", "Search_RBT_Seq(ms)"], "search_seq_graph.png", "Tempo(ms)")
+graph_comparison("Ricerca - Caso Randomizzato", ["Search_BST_Rand(ms)", "Search_AVL_Rand(ms)", "Search_RBT_Rand(ms)"], "search_rand_graph.png", "Tempo(ms)")
 
 print("Grafici creati con successo")

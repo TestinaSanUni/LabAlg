@@ -3,7 +3,14 @@ from src.Node import Node
 class BST:
     # costruttore
     def __init__(self):
-        self.root = None
+        self.root = self.get_nil()
+
+    # metodi ausiliari
+    def get_nil(self):
+        return None
+
+    def is_nil(self, node):
+        return node is None
 
     # gestione altezza
     def get_height(self, node):
@@ -11,7 +18,6 @@ class BST:
             return 0
         return getattr(node, 'h', 1)
 
-    # aggiornamento altezza
     def update_height(self, node):
         if node is not None:
             left_h = self.get_height(node.left)
@@ -22,10 +28,10 @@ class BST:
     def insert(self, key):
         z = Node(key)
         z.h = 1
-        y = None
+        y = self.get_nil()
         x = self.root
 
-        while x is not None:
+        while not self.is_nil(x):
             y = x
             if z.key < x.key:
                 x = x.left
@@ -33,7 +39,7 @@ class BST:
                 x = x.right
         z.p = y
 
-        if y is None:
+        if self.is_nil(y):
             self.root = z
         elif z.key < y.key:
             y.left = z
@@ -41,14 +47,14 @@ class BST:
             y.right = z
 
         temp = z
-        while temp is not None:
+        while not self.is_nil(temp):
             self.update_height(temp)
             temp = temp.p
 
     # ricerca
     def search(self, key):
         x = self.root
-        while x is not None and key != x.key:
+        while not self.is_nil(x) and key != x.key:
             if key < x.key:
                 x = x.left
             else:
@@ -57,23 +63,4 @@ class BST:
 
     # reset
     def reset(self):
-        self.root = None
-
-    # stampe
-    def preorder_walk(self, x):
-        if x is not None:
-            print(f"K:{x.key} (H:{x.h})", end=" | ")
-            self.preorder_walk(x.left)
-            self.preorder_walk(x.right)
-
-    def inorder_walk(self, x):
-        if x is not None:
-            self.inorder_walk(x.left)
-            print(f"K:{x.key} (H:{x.h})", end=" | ")
-            self.inorder_walk(x.right)
-
-    def postorder_walk(self, x):
-        if x is not None:
-            self.postorder_walk(x.left)
-            self.postorder_walk(x.right)
-            print(f"K:{x.key} (H:{x.h})", end=" | ")
+        self.root = self.get_nil()

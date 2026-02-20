@@ -21,32 +21,34 @@ def setup_randomized(size):
 # test inserimento
 def insertion_test(sequence, randomized, tree, num_test):
     optime = np.zeros((2, num_test))
+    height = np.zeros((2, num_test))
 
     for j in range(num_test):
         # sequence test
         start = time.perf_counter()
-
         for i in range(len(sequence)):
             tree.insert(sequence[i])
-
         end = time.perf_counter()
+
         optime[0][j] = end - start
-        height_seq = tree.get_height(tree.root)
+        height[0][j] = tree.get_height(tree.root)
         tree.reset()
 
         # randomized test
         start = time.perf_counter()
-
         for i in range(len(randomized)):
             tree.insert(randomized[i])
-
         end = time.perf_counter()
+
         optime[1][j] = end - start
-        height_rand = tree.get_height(tree.root)
+        height[1][j] = tree.get_height(tree.root)
         tree.reset()
 
-    res_seq = statistics.median(optime[0])
-    res_rand = statistics.median(optime[1])
+    # approssimazione risultati
+    res_seq = statistics.median(optime[0]) * 1000
+    res_rand = statistics.median(optime[1]) * 1000
+    height_seq = statistics.median(height[0])
+    height_rand = statistics.median(height[1])
     return res_seq, res_rand, height_seq, height_rand
 
 # test ricerca
@@ -59,10 +61,8 @@ def search_test(sequence, randomized, search_target, tree, num_test):
 
     for j in range(num_test):
         start = time.perf_counter()
-
         for i in range(len(sequence)):
             tree.search(search_target[i])
-
         end = time.perf_counter()
         optime[0][j] = end - start
     tree.reset()
@@ -73,10 +73,8 @@ def search_test(sequence, randomized, search_target, tree, num_test):
 
     for j in range(num_test):
         start = time.perf_counter()
-
         for i in range(len(randomized)):
             tree.search(search_target[i])
-
         end = time.perf_counter()
         optime[1][j] = end - start
     tree.reset()
@@ -110,47 +108,66 @@ def test_manager(pull, tests, inc):
 
     # definizione colonne
     data = {
-        "Items_insert": list(range(inc, pull + 1, inc)),
-        "Insert_BST_Seq": [x[0] for x in res1],
-        "Insert_BST_Rand": [x[1] for x in res1],
-        "Height_BST_Seq": [x[2] for x in res1],
-        "Height_BST_Rand": [x[3] for x in res1],
+        "Items_insert(N)": list(range(inc, pull + 1, inc)),
+        "Insert_BST_Seq(ms)": [x[0] for x in res1],
+        "Insert_BST_Rand(ms)": [x[1] for x in res1],
+        "Height_BST_Seq(N)": [x[2] for x in res1],
+        "Height_BST_Rand(N)": [x[3] for x in res1],
 
-        "Insert_AVL_Seq": [x[0] for x in res2],
-        "Insert_AVL_Rand": [x[1] for x in res2],
-        "Height_AVL_Seq": [x[2] for x in res2],
-        "Height_AVL_Rand": [x[3] for x in res2],
+        "Insert_AVL_Seq(ms)": [x[0] for x in res2],
+        "Insert_AVL_Rand(ms)": [x[1] for x in res2],
+        "Height_AVL_Seq(N)": [x[2] for x in res2],
+        "Height_AVL_Rand(N)": [x[3] for x in res2],
 
-        "Insert_RBT_Seq": [x[0] for x in res3],
-        "Insert_RBT_Rand": [x[1] for x in res3],
-        "Height_RBT_Seq": [x[2] for x in res3],
-        "Height_RBT_Rand": [x[3] for x in res3],
+        "Insert_RBT_Seq(ms)": [x[0] for x in res3],
+        "Insert_RBT_Rand(ms)": [x[1] for x in res3],
+        "Height_RBT_Seq(N)": [x[2] for x in res3],
+        "Height_RBT_Rand(N)": [x[3] for x in res3],
 
-        "Items_research": list(range(inc, pull + 1, inc)),
-        "Search_BST_Seq": [x[0] for x in res4],
-        "Search_BST_Rand": [x[1] for x in res4],
-        "Search_AVL_Seq": [x[0] for x in res5],
-        "Search_AVL_Rand": [x[1] for x in res5],
-        "Search_RBT_Seq": [x[0] for x in res6],
-        "Search_RBT_Rand": [x[1] for x in res6]
+        "Items_research(N)": list(range(inc, pull + 1, inc)),
+        "Search_BST_Seq(ms)": [x[0] for x in res4],
+        "Search_BST_Rand(ms)": [x[1] for x in res4],
+        "Search_AVL_Seq(ms)": [x[0] for x in res5],
+        "Search_AVL_Rand(ms)": [x[1] for x in res5],
+        "Search_RBT_Seq(ms)": [x[0] for x in res6],
+        "Search_RBT_Rand(ms)": [x[1] for x in res6]
     }
 
     df = pd.DataFrame(data)
 
-    # formattazione forzata a 8 cifre decimali
-    cols_to_format = df.columns.drop(["Items_insert", "Items_research", "Height_BST_Seq", "Height_BST_Rand", "Height_AVL_Seq", "Height_AVL_Rand", "Height_RBT_Seq", "Height_RBT_Rand"])
-    for col in cols_to_format:
-        df[col] = df[col].map(lambda x: f"{x:.8f}")
+    time_cols = [
+        "Insert_BST_Seq(ms)", "Insert_BST_Rand(ms)",
+        "Insert_AVL_Seq(ms)", "Insert_AVL_Rand(ms)",
+        "Insert_RBT_Seq(ms)", "Insert_RBT_Rand(ms)",
+        "Search_BST_Seq(ms)", "Search_BST_Rand(ms)",
+        "Search_AVL_Seq(ms)", "Search_AVL_Rand(ms)",
+        "Search_RBT_Seq(ms)", "Search_RBT_Rand(ms)"
+    ]
 
+    int_cols = [
+        "Items_insert(N)", "Items_research(N)",
+        "Height_BST_Seq(N)", "Height_BST_Rand(N)",
+        "Height_AVL_Seq(N)", "Height_AVL_Rand(N)",
+        "Height_RBT_Seq(N)", "Height_RBT_Rand(N)"
+    ]
+
+    # formattazione valori
+    for col in int_cols:
+        df[col] = df[col].astype(int)
+
+    for col in time_cols:
+        df[col] = df[col].map(lambda x: f"{x:.5f}")
+
+    # salvataggio
     file_path = os.path.join(os.path.dirname(__file__), "exp_results.csv")
     df.to_csv(file_path, index = False)
 
     print(f"\nRisultati salvati correttamente in: exp_results.csv\n")
 
 # MAIN
-# dichiarazione variabili globali
-pull_size = 3000 # numero massimo di elementi da campionare
-num_test = 10 # qty test per ricavare la media
-increment = 50 # passo incrementale (definisce densità dei punti)
+if __name__ == "__main__":
+    pull_size = 1000 # numero massimo di elementi da campionare
+    num_test = 1 # qty test per ricavare la media
+    increment = 100 # passo incrementale (definisce densità dei punti)
 
-test_manager(pull_size, num_test, increment)
+    test_manager(pull_size, num_test, increment)

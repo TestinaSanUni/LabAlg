@@ -2,31 +2,16 @@ from src.Node import Node
 from BST import BST
 
 class AVL(BST):
-    # costruttore
-    def __init__(self):
-        super().__init__()
-        self.root = None
-
-    # gestione altezza
-    def get_height(self, node):
-        if node is None:
-            return 0
-        return node.h
-
-    def update_height(self, node):
-        if node is not None:
-            node.h = 1 + max(self.get_height(node.left), self.get_height(node.right))
-
     # controllo bilanciamento
     def get_balance(self, node):
-        if node is None:
+        if self.is_nil(node):
             return 0
         return self.get_height(node.left) - self.get_height(node.right)
 
     # rotazione destra
     def right_rotate(self, y):
         x = y.left
-        if x is None: return y
+        if self.is_nil(x): return y
 
         temp = x.right
         x.right = y
@@ -35,7 +20,7 @@ class AVL(BST):
         x.p = y.p
         y.p = x
 
-        if temp is not None:
+        if not self.is_nil(temp):
             temp.p = y
 
         # aggiornamento altezza
@@ -46,7 +31,7 @@ class AVL(BST):
     # rotazione sinistra
     def left_rotate(self, x):
         y = x.right
-        if y is None: return x
+        if self.is_nil(y): return x
 
         temp = y.left
         y.left = x
@@ -55,13 +40,12 @@ class AVL(BST):
         y.p = x.p
         x.p = y
 
-        if temp is not None:
+        if not self.is_nil(temp):
             temp.p = x
 
         # aggiornamento altezze
         self.update_height(x)
         self.update_height(y)
-
         return y
 
     # inserimento
@@ -75,7 +59,7 @@ class AVL(BST):
 
     # inserimento ricorsivo
     def insert_recursive(self, node, key):
-        if node is None:
+        if self.is_nil(node):
             new_node = Node(key)
             new_node.h = 1
             return new_node
@@ -109,26 +93,3 @@ class AVL(BST):
             return self.left_rotate(node)
 
         return node
-
-    # reset
-    def reset(self):
-        self.root = None
-
-    # stampa
-    def preorder_walk(self, x):
-        if x is not None:
-            print(f"Key: {x.key}, H: {x.h}")
-            self.preorder_walk(x.left)
-            self.preorder_walk(x.right)
-
-    def inorder_walk(self, x):
-        if x is not None:
-            self.inorder_walk(x.left)
-            print(f"Key: {x.key}, H: {x.h}")
-            self.inorder_walk(x.right)
-
-    def postorder_walk(self, x):
-        if x is not None:
-            self.postorder_walk(x.left)
-            self.postorder_walk(x.right)
-            print(f"Key: {x.key}, H: {x.h}")

@@ -4,21 +4,17 @@ from BST import BST
 class RBT(BST):
     # costruttore
     def __init__(self):
-        super().__init__()
         self.nil = Node(None)
         self.nil.color = 'BLACK'
         self.nil.h = 0
-        self.root = self.nil
+        super().__init__()
 
-    # gestione altezza
-    def update_height(self, x):
-        if x != self.nil:
-            x.h = 1 + max(self.get_height(x.left), self.get_height(x.right))
+    # metodi ausiliari
+    def get_nil(self):
+        return self.nil
 
-    def get_height(self, node):
-        if node is None or node == self.nil:
-            return 0
-        return node.h
+    def is_nil(self, node):
+        return node is None or node == self.nil
 
     # rotazione sinistra
     def left_rotate(self, x):
@@ -138,36 +134,3 @@ class RBT(BST):
                     z.p.p.color = 'RED'
                     self.left_rotate(z.p.p)
         self.root.color = 'BLACK'
-
-    # ricerca
-    def search(self, key):
-        x = self.root
-        while x != self.nil and key != x.key:
-            if key < x.key:
-                x = x.left
-            else:
-                x = x.right
-        return x if x != self.nil else None
-
-    # reset
-    def reset(self):
-        self.root = self.nil
-
-    # stampe
-    def preorder_walk(self, x):
-        if x != self.nil:
-            print(f"Chiave: {x.key}, Altezza: {x.h}, Colore: {x.color}")
-            self.preorder_walk(x.left)
-            self.preorder_walk(x.right)
-
-    def inorder_walk(self, x):
-        if x != self.nil:
-            self.inorder_walk(x.left)
-            print(f"Chiave: {x.key}, Altezza: {x.h}, Colore: {x.color}")
-            self.inorder_walk(x.right)
-
-    def postorder_walk(self, x):
-        if x != self.nil:
-            self.postorder_walk(x.left)
-            self.postorder_walk(x.right)
-            print(f"Chiave: {x.key}, Altezza: {x.h}, Colore: {x.color}")
