@@ -10,18 +10,19 @@ class AVL(BST):
 
     # rotazione destra
     def right_rotate(self, y):
+        # data la terna di nodi x, y, z: y è il vecchio padre, x è il nuovo padre
         x = y.left
         if self.is_nil(x): return y
 
-        temp = x.right
+        z = x.right
         x.right = y
-        y.left = temp
+        y.left = z
 
         x.p = y.p
         y.p = x
 
-        if not self.is_nil(temp):
-            temp.p = y
+        if not self.is_nil(z):
+            z.p = y
 
         # aggiornamento altezza
         self.update_height(y)
@@ -33,15 +34,15 @@ class AVL(BST):
         y = x.right
         if self.is_nil(y): return x
 
-        temp = y.left
+        z = y.left
         y.left = x
-        x.right = temp
+        x.right = z
 
         y.p = x.p
         x.p = y
 
-        if not self.is_nil(temp):
-            temp.p = x
+        if not self.is_nil(z):
+            z.p = x
 
         # aggiornamento altezze
         self.update_height(x)
