@@ -166,8 +166,8 @@ def test_manager(pull, tests, inc):
 
 # MAIN
 if __name__ == "__main__":
-    pull_size = 1000 # numero massimo di elementi da campionare
-    num_test = 1 # qty test per ricavare la media
+    pull_size = 3000 # numero massimo di elementi da campionare
+    num_test = 10 # qty test per ricavare la media
     increment = 100 # passo incrementale (definisce densità dei punti)
 
     test_manager(pull_size, num_test, increment)
