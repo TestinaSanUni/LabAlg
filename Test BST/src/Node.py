@@ -5,6 +5,6 @@ class Node:
         self.left = None
         self.right = None
 
-        self.color = 'RED' # 'RED' o 'BLACK'
+        self.color = 'RED' # RED o BLACK
 
         self.h = 1

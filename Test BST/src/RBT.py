@@ -1,12 +1,11 @@
 from src.Node import Node
-from BST import BST
+from src.BST import BST
 
 class RBT(BST):
     # costruttore
     def __init__(self):
         self.nil = Node(None)
-        self.nil.color = 'BLACK'
-        self.nil.h = 0
+        self.get_nil().color = 'BLACK'
         super().__init__()
 
     # metodi ausiliari
@@ -17,120 +16,105 @@ class RBT(BST):
         return node is None or node == self.nil
 
     # rotazione sinistra
-    def left_rotate(self, x):
-        y = x.right
-        x.right = y.left
+    def left_rotate(self, old):
+        new = old.right
+        old.right = new.left
 
-        if y.left != self.nil:
-            y.left.p = x
+        if new.left != self.get_nil():
+            new.left.p = old
 
-        y.p = x.p
+        new.p = old.p
 
-        if x.p == self.nil:
-            self.root = y
-        elif x == x.p.left:
-            x.p.left = y
+        if old.p == self.get_nil():
+            self.root = new
+        elif old == old.p.left:
+            old.p.left = new
         else:
-            x.p.right = y
+            old.p.right = new
 
-        y.left = x
-        x.p = y
-
-        # aggiornamento altezze
-        self.update_height(x)
-        self.update_height(y)
+        new.left = old
+        old.p = new
 
     # rotazione destra
-    def right_rotate(self, x):
-        y = x.left
-        x.left = y.right
+    def right_rotate(self, old):
+        new = old.left
+        old.left = new.right
 
-        if y.right != self.nil:
-            y.right.p = x
+        if new.right != self.get_nil():
+            new.right.p = old
 
-        y.p = x.p
+        new.p = old.p
 
-        if x.p == self.nil:
-            self.root = y
-        elif x == x.p.right:
-            x.p.right = y
+        if old.p == self.get_nil():
+            self.root = new
+        elif old == old.p.right:
+            old.p.right = new
         else:
-            x.p.left = y
+            old.p.left = new
 
-        y.right = x
-        x.p = y
-
-        # aggiornamento altezze
-        self.update_height(x)
-        self.update_height(y)
+        new.right = old
+        old.p = new
 
     # inserimento
     def insert(self, key):
-        z = Node(key)
-        z.h = 1
-        y = self.nil
-        x = self.root
+        node = Node(key)
+        p = self.get_nil()
+        curr = self.root
 
-        while x != self.nil:
-            y = x
-            if z.key < x.key:
-                x = x.left
+        while curr != self.get_nil():
+            p = curr
+            if node.key < curr.key:
+                curr = curr.left
             else:
-                x = x.right
+                curr = curr.right
 
-        z.p = y
+        node.p = p
 
-        if y == self.nil:
-            self.root = z
-        elif z.key < y.key:
-            y.left = z
+        if p == self.get_nil():
+            self.root = node
+        elif node.key < p.key:
+            p.left = node
         else:
-            y.right = z
+            p.right = node
 
-        z.left = self.nil
-        z.right = self.nil
-        z.color = 'RED'
+        node.left = self.get_nil()
+        node.right = self.get_nil()
+        node.color = 'RED'
 
-        self.fixup(z)
-
-        # aggiornamento altezze
-        temp = z
-        while temp != self.nil:
-            self.update_height(temp)
-            temp = temp.p
+        self.fixup(node)
 
     # fixup
-    def fixup(self, z):
-        while z.p.color == 'RED':
-            if z.p == z.p.p.left:
-                y = z.p.p.right
+    def fixup(self, curr):
+        while curr.p.color == 'RED':
+            if curr.p == curr.p.p.left:
+                uncle = curr.p.p.right
 
-                if y.color == 'RED':
-                    z.p.color = 'BLACK'
-                    y.color = 'BLACK'
-                    z.p.p.color = 'RED'
-                    z = z.p.p
+                if uncle.color == 'RED':
+                    curr.p.color = 'BLACK'
+                    uncle.color = 'BLACK'
+                    curr.p.p.color = 'RED'
+                    curr = curr.p.p
                 else:
-                    if z == z.p.right:
-                        z = z.p
-                        self.left_rotate(z)
+                    if curr == curr.p.right:
+                        curr = curr.p
+                        self.left_rotate(curr)
 
-                    z.p.color = 'BLACK'
-                    z.p.p.color = 'RED'
-                    self.right_rotate(z.p.p)
+                    curr.p.color = 'BLACK'
+                    curr.p.p.color = 'RED'
+                    self.right_rotate(curr.p.p)
             else:
-                y = z.p.p.left
+                uncle = curr.p.p.left
 
-                if y.color == 'RED':
-                    z.p.color = 'BLACK'
-                    y.color = 'BLACK'
-                    z.p.p.color = 'RED'
-                    z = z.p.p
+                if uncle.color == 'RED':
+                    curr.p.color = 'BLACK'
+                    uncle.color = 'BLACK'
+                    curr.p.p.color = 'RED'
+                    curr = curr.p.p
                 else:
-                    if z == z.p.left:
-                        z = z.p
-                        self.right_rotate(z)
-                    z.p.color = 'BLACK'
-                    z.p.p.color = 'RED'
-                    self.left_rotate(z.p.p)
+                    if curr == curr.p.left:
+                        curr = curr.p
+                        self.right_rotate(curr)
+                    curr.p.color = 'BLACK'
+                    curr.p.p.color = 'RED'
+                    self.left_rotate(curr.p.p)
         self.root.color = 'BLACK'

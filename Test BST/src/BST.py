@@ -12,54 +12,42 @@ class BST:
     def is_nil(self, node):
         return node is None
 
-    # gestione altezza
+    # calcolo altezza
     def get_height(self, node):
-        if node is None:
+        if self.is_nil(node):
             return 0
-        return getattr(node, 'h', 1)
-
-    def update_height(self, node):
-        if node is not None:
-            left_h = self.get_height(node.left)
-            right_h = self.get_height(node.right)
-            node.h = 1 + max(left_h, right_h)
+        return 1 + max(self.get_height(node.left), self.get_height(node.right))
 
     # inserimento
     def insert(self, key):
-        z = Node(key)
-        z.h = 1
-        y = self.get_nil()
-        x = self.root
+        node = Node(key)
+        p = self.get_nil()
+        curr = self.root
 
-        while not self.is_nil(x):
-            y = x
-            if z.key < x.key:
-                x = x.left
+        while not self.is_nil(curr):
+            p = curr
+            if node.key < curr.key:
+                curr = curr.left
             else:
-                x = x.right
-        z.p = y
+                curr = curr.right
+        node.p = p
 
-        if self.is_nil(y):
-            self.root = z
-        elif z.key < y.key:
-            y.left = z
+        if self.is_nil(p):
+            self.root = node
+        elif node.key < p.key:
+            p.left = node
         else:
-            y.right = z
-
-        temp = z
-        while not self.is_nil(temp):
-            self.update_height(temp)
-            temp = temp.p
+            p.right = node
 
     # ricerca
     def search(self, key):
-        x = self.root
-        while not self.is_nil(x) and key != x.key:
-            if key < x.key:
-                x = x.left
+        curr = self.root
+        while not self.is_nil(curr) and key != curr.key:
+            if key < curr.key:
+                curr = curr.left
             else:
-                x = x.right
-        return x
+                curr = curr.right
+        return curr
 
     # reset
     def reset(self):

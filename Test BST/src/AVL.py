@@ -1,96 +1,95 @@
 from src.Node import Node
-from BST import BST
+from src.BST import BST
 
 class AVL(BST):
-    # controllo bilanciamento
-    def get_balance(self, node):
-        if self.is_nil(node):
-            return 0
-        return self.get_height(node.left) - self.get_height(node.right)
+    # rotazione sinistra
+    def left_rotate(self, old):
+        new = old.right
+        old.right = new.left
+
+        old.h = max(old.left.h, old.right.h) + 1
+
+        if new.left != self.get_nil():
+            new.left.p = old
+        new.p = old.p
+
+        if old.p == self.get_nil():
+            self.root = new
+        elif old == old.p.left:
+            old.p.left = new
+        else:
+            old.p.right = new
+
+        new.left = old
+        new.h = max(new.left.h, new.right.h) + 1
+        old.p = new
 
     # rotazione destra
-    def right_rotate(self, y):
-        # data la terna di nodi x, y, z: y è il vecchio padre, x è il nuovo padre
-        x = y.left
-        if self.is_nil(x): return y
+    def right_rotate(self, old):
+        new = old.left
+        old.left = new.right
 
-        z = x.right
-        x.right = y
-        y.left = z
+        old.h = max(old.left.h, old.right.h) + 1
 
-        x.p = y.p
-        y.p = x
+        if new.right != self.get_nil():
+            new.right.p = old
+        new.p = old.p
 
-        if not self.is_nil(z):
-            z.p = y
+        if old.p == self.get_nil():
+            self.root = new
+        elif old == old.p.right:
+            old.p.right = new
+        else:
+            old.p.left = new
 
-        # aggiornamento altezza
-        self.update_height(y)
-        self.update_height(x)
-        return x
+        new.right = old
+        new.h = max(new.left.h, new.right.h) + 1
+        old.p = new
 
-    # rotazione sinistra
-    def left_rotate(self, x):
-        y = x.right
-        if self.is_nil(y): return x
+    # fixup
+    def fixup(self, node):
+        curr = node.p
+        while curr != self.get_nil():
+            curr.h = max(curr.left.h, curr.right.h) + 1
 
-        z = y.left
-        y.left = x
-        x.right = z
+            balance = curr.left.h - curr.right.h
 
-        y.p = x.p
-        x.p = y
+            if balance == 2:
+                if (curr.left.left.h - curr.left.right.h) == -1:
+                    self.left_rotate(curr.left)
+                self.right_rotate(curr)
+                curr = curr.p
+            elif balance == -2:
+                if (curr.right.left.h - curr.right.right.h) == 1:
+                    self.right_rotate(curr.right)
+                self.left_rotate(curr)
+                curr = curr.p
 
-        if not self.is_nil(z):
-            z.p = x
-
-        # aggiornamento altezze
-        self.update_height(x)
-        self.update_height(y)
-        return y
+            curr = curr.p
 
     # inserimento
     def insert(self, key):
-        if self.root is None:
-            self.root = Node(key)
-            self.root.h = 1
-            return
+        node = Node(key)
+        p = self.get_nil()
+        curr = self.root
 
-        self.root = self.insert_recursive(self.root, key)
+        while curr != self.get_nil():
+            p = curr
+            if node.key < curr.key:
+                curr = curr.left
+            else:
+                curr = curr.right
 
-    # inserimento ricorsivo
-    def insert_recursive(self, node, key):
-        if self.is_nil(node):
-            new_node = Node(key)
-            new_node.h = 1
-            return new_node
-
-        if key < node.key:
-            node.left = self.insert_recursive(node.left, key)
-            node.left.p = node
+        node.p = p
+        if p == self.get_nil():
+            self.root = node
+        elif node.key < p.key:
+            p.left = node
         else:
-            node.right = self.insert_recursive(node.right, key)
-            node.right.p = node
+            p.right = node
 
-        self.update_height(node)
-        balance = self.get_balance(node)
+        node.left = self.get_nil()
+        node.right = self.get_nil()
+        node.h = 1
 
-        # caso left left
-        if balance > 1 and key < node.left.key:
-            return self.right_rotate(node)
-
-        # caso right right
-        if balance < -1 and key > node.right.key:
-            return self.left_rotate(node)
-
-        # caso left right
-        if balance > 1 and key > node.left.key:
-            node.left = self.left_rotate(node.left)
-            return self.right_rotate(node)
-
-        # caso right left
-        if balance < -1 and key < node.right.key:
-            node.right = self.right_rotate(node.right)
-            return self.left_rotate(node)
-
-        return node
+        self.fixup(node)
