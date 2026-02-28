@@ -2,17 +2,27 @@ from src.Node import Node
 from src.BST import BST
 
 class AVL(BST):
+    # gestione altezza
+    def tree_height(self, node):
+        if node is None:
+            return 0
+        return getattr(node, 'h', 1)
+
+    def update_height(self, node):
+        if node is not None:
+            left_h = self.tree_height(node.left)
+            right_h = self.tree_height(node.right)
+            node.h = 1 + max(left_h, right_h)
+
     # rotazione sinistra
     def left_rotate(self, old):
         new = old.right
+
         old.right = new.left
-
-        old.h = max(old.left.h, old.right.h) + 1
-
         if new.left != self.get_nil():
             new.left.p = old
-        new.p = old.p
 
+        new.p = old.p
         if old.p == self.get_nil():
             self.root = new
         elif old == old.p.left:
@@ -21,20 +31,20 @@ class AVL(BST):
             old.p.right = new
 
         new.left = old
-        new.h = max(new.left.h, new.right.h) + 1
         old.p = new
+
+        self.update_height(old)
+        self.update_height(new)
 
     # rotazione destra
     def right_rotate(self, old):
         new = old.left
+
         old.left = new.right
-
-        old.h = max(old.left.h, old.right.h) + 1
-
         if new.right != self.get_nil():
             new.right.p = old
-        new.p = old.p
 
+        new.p = old.p
         if old.p == self.get_nil():
             self.root = new
         elif old == old.p.right:
@@ -43,24 +53,25 @@ class AVL(BST):
             old.p.left = new
 
         new.right = old
-        new.h = max(new.left.h, new.right.h) + 1
         old.p = new
+
+        self.update_height(old)
+        self.update_height(new)
 
     # fixup
     def fixup(self, node):
         curr = node.p
         while curr != self.get_nil():
-            curr.h = max(curr.left.h, curr.right.h) + 1
-
-            balance = curr.left.h - curr.right.h
+            self.update_height(curr)
+            balance = self.tree_height(curr.left) - self.tree_height(curr.right)
 
             if balance == 2:
-                if (curr.left.left.h - curr.left.right.h) == -1:
+                if (self.tree_height(curr.left.left) - self.tree_height(curr.left.right)) == -1:
                     self.left_rotate(curr.left)
                 self.right_rotate(curr)
                 curr = curr.p
             elif balance == -2:
-                if (curr.right.left.h - curr.right.right.h) == 1:
+                if (self.tree_height(curr.right.left) - self.tree_height(curr.right.right)) == 1:
                     self.right_rotate(curr.right)
                 self.left_rotate(curr)
                 curr = curr.p

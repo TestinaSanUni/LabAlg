@@ -1,4 +1,6 @@
 from src.Node import Node
+import sys
+sys.setrecursionlimit(10**6)
 
 class BST:
     # costruttore
@@ -13,10 +15,10 @@ class BST:
         return node is None
 
     # calcolo altezza
-    def get_height(self, node):
+    def tree_height(self, node):
         if self.is_nil(node):
             return 0
-        return 1 + max(self.get_height(node.left), self.get_height(node.right))
+        return 1 + max(self.tree_height(node.left), self.tree_height(node.right))
 
     # inserimento
     def insert(self, key):

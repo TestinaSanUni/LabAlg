@@ -1,10 +1,6 @@
-print("1", flush = True)
 from Tester import Tester
-print("2")
 import pandas as pd
-print("3")
 import matplotlib.pyplot as plt
-print("4")
 import os
 
 # generazione foglio di calcolo
@@ -43,7 +39,8 @@ def graph(df, title, cols, name, y_label):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_folder = os.path.join(script_dir, "plots")
 
-    plt.figure(figsize = (10, 6))
+    plt.figure(figsize = (10, 7))
+    plt.rcParams.update({'font.size': 22})
 
     # acquisizione dati numerici
     df[cols[0]] = pd.to_numeric(df[cols[0]])
@@ -66,10 +63,11 @@ def graph(df, title, cols, name, y_label):
     plt.savefig(save_path)
     plt.close()
 
+    print("Grafico generato correttamente come:", name)
+
 
 # MAIN
 if __name__ == "__main__":
-    print("aaaaa")
     pull_size = 1000 # numero massimo di elementi da campionare
     num_test = 1 # qty test per ricavare la media
     increment = 200 # passo incrementale (definisce densità dei punti)
@@ -92,7 +90,6 @@ if __name__ == "__main__":
                      "height_seq_graph.png", "Altezza(h)")
     graph(dataframe, "Altezza - Caso Randomizzato", ["Height_BST_Rand(n)", "Height_AVL_Rand(n)", "Height_RBT_Rand(n)"],
                      "height_rand_graph.png", "Altezza(h)")
-
     graph(dataframe, "Ricerca - Caso Sequenziale", ["Search_BST_Seq(ms)", "Search_AVL_Seq(ms)", "Search_RBT_Seq(ms)"],
                      "search_seq_graph.png", "Tempo(ms)")
     graph(dataframe, "Ricerca - Caso Randomizzato",

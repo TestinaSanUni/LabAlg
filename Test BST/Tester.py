@@ -12,8 +12,8 @@ def setup_sequence(size):
     sequence = list(range(size))
     return sequence
 
-def setup_randomized(size, max):
-    randomized = [random.randint(1, max) for _ in range(size)]
+def setup_randomized(size, max_value):
+    randomized = [random.randint(1, max_value) for _ in range(size)]
     return randomized
 
 
@@ -36,7 +36,7 @@ class Tester:
             end = time.perf_counter()
 
             optime.append(end - start)
-            height.append(tree.get_height(tree.root))
+            height.append(tree.tree_height(tree.root))
             tree.reset()
 
         # approssimazione risultati
@@ -60,7 +60,7 @@ class Tester:
             optime.append(end - start)
         tree.reset()
 
-        res_seq = statistics.median(optime)
+        res_seq = statistics.median(optime) * 1000
         return res_seq
 
     # test manager
