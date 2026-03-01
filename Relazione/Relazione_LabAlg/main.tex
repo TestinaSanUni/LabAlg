@@ -31,7 +31,6 @@
 
 \subsection{Caso di studio}
 In questa relazione verranno analizzate e confrontate le prestazioni di tre diverse strutture dati utilizzate per la gestione di insiemi dinamici. Le strutture che verranno analizzate sono: gli \textbf{Alberi Binari di Ricerca (BST)}, gli alberi \textbf{AVL} e gli \textbf{Alberi Rosso-Neri (RBT)}.
-
 Un obiettivo fondamentale di ogni struttura dati è la gestione efficiente dei dati che ospiterà. Sebbene i BST offrano una struttura semplice e intuitiva per l'inserimento e la ricerca, le prestazioni ottenute dipendono fortemente dall'ordine dei dati in ingresso.
 
 \bigskip
@@ -52,24 +51,22 @@ Le caratteristiche hardware della macchina utilizzata per svolgere i test sono:
 % ===================================================================================
 
 \section{Teoria}
-Un albero è una struttura dati composta da un insieme di \textbf{nodi} e \textbf{archi}. Ogni nodo rappresenta un elemento dell'albero ed è composto da una chiave che lo identifica univocamente e da più puntatori, che rappresentano gli archi e offrono un collegamento verso altri nodi.
-
-Dato un generico nodo in cui almeno un puntatore ha valore non nullo, tale nodo prende il nome di \textbf{padre}, mentre i nodi da lui raggiungibili prendono il nome di \textbf{figli}.
+Un albero è una struttura dati composta da un insieme di \textbf{nodi} e \textbf{archi}. Ogni nodo rappresenta un elemento dell'albero ed è composto da una chiave, che lo identifica univocamente, e da più puntatori, che rappresentano gli archi e offrono un collegamento verso altri nodi.
+Un nodo è \textbf{figlio} se collegato direttamente a un altro di un livello superiore, detto \textbf{padre}.
 
 \bigskip
 Il nodo principale, da cui ha origine l'intera struttura, prende il nome di \textbf{radice}. Ogni nodo che non ha figli viene detto \textbf{foglia}.
-
-Si dice \textbf{cammino} l'insieme di nodi e archi che devono essere attraversati per raggiungere un nodo, partendo da un altro. La lunghezza del cammino più lungo rappresenta l'\textbf{altezza} dell'albero e viene misurata contando il numero di nodi che si incontrano lungo quel cammino (parte dalla radice e giunge a una foglia)
+Si dice \textbf{cammino} l'insieme di nodi e archi che, partendo da un nodo, devono essere attraversati per raggiungerne un altro. La lunghezza del cammino più lungo rappresenta l'\textbf{altezza} dell'albero e viene misurata contando il numero di nodi che si incontrano lungo quel cammino (parte dalla radice e giunge a una foglia).
 
 \subsection{Binary Search Tree (BST)}
 Un Albero Binario di Ricerca è un tipo particolare di albero specializzato per la ricerca di valori.
-
 Ogni nodo avrà un puntatore sinistro che permette il collegamento a un \textbf{sottoalbero} contenente solo valori minori e uno destro che permette il collegamento a un sottoalbero contenente solo valori maggiori.
 
+\bigskip
 Le operazioni di base richiedono un tempo proporzionale all'altezza $h$ dell'albero, ovvero $O(h)$.
 \begin{itemize}
-    \item \textbf{Caso Medio:} Se le chiavi vengono inserite in ordine casuale, l'altezza attesa dell'albero è $O(\log n)$, in quanto la struttura tende a bilanciarsi in autonomia.
-    \item \textbf{Caso Peggiore:} Se le chiavi vengono inserite in ordine crescente o decrescente, l'albero degenera in una lista concatenata di altezza $h = n - 1$. In questo scenario, le operazioni raggiungono una complessità $O(n)$, rendendo la struttura inefficiente.
+    \item \textbf{Caso Medio:} Se le chiavi vengono inserite in ordine casuale, l'altezza attesa dell'albero è $O(\log n)$, in quanto la struttura tende a bilanciarsi autonomamente.
+    \item \textbf{Caso Peggiore:} Se le chiavi vengono inserite in ordine crescente o decrescente, l'albero degenera in una lista concatenata di altezza $h = n - 1$. In questo scenario, le operazioni raggiungono una complessità pari a $O(n)$, rendendo la struttura inefficiente.
 \end{itemize}
 
 \subsection{Alberi AVL}
@@ -77,7 +74,7 @@ Gli alberi AVL sono alberi binari di ricerca \textbf{strettamente bilanciati in 
 \begin{equation}
     BF(x) = h(x.left) - h(x.right)
 \end{equation}
-con h che indica l'altezza. Perché un albero sia AVL, deve valere che $BF(x) \in \{-1, 0, 1\}$ per ogni nodo. Grazie a questo vincolo molto stringente, gli alberi AVL sfruttano al massimo l'ampiezza. Nonostante abbiano un costo di inserimento non molto ottimizzato a causa dei frequenti controlli e delle rotazioni, la perfetta organizzazione dei dati in memoria rende questa tipologia di albero ottimale per la ricerca.
+con h che indica l'altezza di un nodo. Perché un albero sia AVL, deve valere che $BF(x) \in \{-1, 0, 1\}$ per ogni nodo. Grazie a questo vincolo molto stringente, gli alberi AVL sfruttano al massimo l'ampiezza, riducendo al minimo i puntatori inutilizzati. Nonostante abbiano un costo di inserimento non molto ottimizzato a causa dei frequenti controlli e delle rotazioni, la perfetta organizzazione dei dati in memoria rende questa tipologia di albero ottimale per la ricerca.
 
 \subsection{Red-Black Tree (RBT)}
 Gli alberi Rosso-Neri hanno un funzionamento simile a quello degli AVL, ma il bilanciamento viene effettuato secondo limiti meno restrittivi. Ogni nodo contiene un bit supplementare di informazione che indica il colore (rosso o nero). Un albero Rosso-Nero, oltre a soddisfare le caratteristiche di un BST, deve soddisfare le seguenti proprietà:
@@ -88,8 +85,7 @@ Gli alberi Rosso-Neri hanno un funzionamento simile a quello degli AVL, ma il bi
     \item Se un nodo è rosso, entrambi i suoi figli sono neri (non possono esserci due nodi rossi consecutivi).
     \item Per ogni nodo, tutti i cammini semplici che scendono verso le foglie discendenti contengono lo stesso numero di nodi neri.
 \end{enumerate}
-
-In questo modo abbiamo la garanzia che il cammino più lungo non sia mai maggiore del doppio del cammino più breve. L'altezza dell'albero è perciò limitata a $2\lg(n+1)$, assicurando che il limite asintotico delle operazioni di inserimento e ricerca sia $O(\log n)$ anche nel caso peggiore.
+In questo modo abbiamo la garanzia che il cammino più lungo non sia mai maggiore del doppio del cammino più breve. L'altezza dell'albero è perciò limitata a $2\lg(n+1)$, assicurando che il limite asintotico delle operazioni rimanga logaritmico anche nel caso peggiore. Il limite è pari a $O(\log n)$.
 
 
 % ===================================================================================
@@ -100,44 +96,65 @@ In questo modo abbiamo la garanzia che il cammino più lungo non sia mai maggior
 \section{Documentazione del codice}
 
 \subsection{Schema delle classi}
-Le uniche classi create sono per l'implementazione delle strutture dati.
-I test e la generazione dei grafici sono stati effettuati tramite metodi \textit{standalone} al fine di semplificare la progettazione.
+Le classi create sono per l'implementazione delle strutture dati e per svolgere i test.
+Il salvataggio dei dati e la generazione dei grafici sono stati effettuati tramite metodi \textit{standalone}, in quanto non è necessario salvarne uno stato.
+La classe nodo è unica per tutte le tipologie di albero e include tutti gli attributi necessari al corretto funzionamento delle strutture. Si è preferito utilizzare una sola tipologia di nodo in modo da semplificare la progettazione.
+Per questioni di lettura, il colore dei nodi degli RBT è indicato da una stringa e non da una variabile booleana.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{pics/UML.png}
-    \caption{Diagramma UML delle classi utilizzate per i test}
+    \includegraphics[width=1\linewidth]{pics/uml.png}
+    \caption{UML delle classi che implementano le strutture dati}
     \label{fig:placeholder}
 \end{figure}
 
+Il cuore del programma è rappresentato dalle classi presenti nell'immagine. Permettono l'utilizzo delle strutture dati e implementano metodi mirati alla raccolta dei dati per i test.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{pics/Tester.png}
+    \caption{UML della classe che gestisce i test}
+    \label{fig:placeholder}
+\end{figure}
+
+Questa classe è stata implementata in modo da gestire nel miglior modo possibile i test da effettuare. Questa classe si occupa di cronometrare il tempo che impiega ciascun albero per portare a termine le operazioni di inserimento e ricerca.
+Ogni volta che viene lanciato un test, questo viene ripetuto più volte, così da ottenere un risultato che sia il più possibile pulito ed indipendente dalle caratteristiche della macchina.
+
 \subsection{Metodi implementativi}
 \begin{itemize}
-    \item \textbf{Node}: è la classe che definisce tutte le informazioni che ogni nodo generico può contenere. Si è preferito definire solo una classe Nodo comune a tutte le tipologie di alberi per motivi di semplicità.
-    \item \textbf{BST}: Binary Search Tree. E' la struttura dati più semplice.
+    \item \textbf{Node}: è la classe che definisce tutte le informazioni che ogni nodo generico può contenere.
+    \item \textbf{BST}: Binary Search Tree. E' la struttura dati più semplice e intuitiva, realizzata in modo più generale possibile così da poterla estendere per le altre due strutture dati.
     \begin{itemize}
-        \item get\_nil(): metodo ausiliario che, in base al tipo di albero che lo chiama, restituisce il valore nullo appropriato;
-        \item is\_nil(node): metodo ausiliario booleano che indica se il puntatore al nodo che viene passato è nullo oppure no;
-        \item get\_height(node): restituisce l'altezza del nodo passato nei parametri;
-        \item update\_height(node): aggiorna l'altezza di un nodo sulla base di quella dei suoi figli;
+        \item get\_nil(): metodo ausiliario che, in base al tipo di albero che lo chiama, restituisce il valore nullo appropriato (None o \textbf{nodo sentinella});
+        \item is\_nil(node): metodo ausiliario booleano che indica se il puntatore al nodo che viene passato è nullo oppure no, secondo il valore appropriato;
+        \item tree\_height(node): restituisce l'altezza di \textit{node} calcolandola ex-novo a partire dalle foglie. In questo modo, anche se un albero non aggiorna il campo dedicato durante il suo utilizzo, permette comunque di ottenere un valore;
         \item insert(key): istanzia un nuovo nodo e lo inserisce nell'albero;
-        \item search(key): cerca e ritorna, se presente, il nodo la cui chiave ha lo stesso valore di quello passato;
-        \item reset(): svuota un albero annullando la radice. Sfruttando il metodo ausialiario get\_nil(), è possibile renderlo indipendente dal tipo di albero che sto utilizzando;
+        \item search(key): cerca e ritorna il nodo la cui chiave ha valore uguale a \textit{key}. Se il nodo non viene trovato, viene restituito il valore nullo;
+        \item reset(): svuota un albero annullando la radice. Sfruttando il metodo ausiliario get\_nil(), è possibile renderlo indipendente dal tipo di albero che viene utilizzato;
     \end{itemize}
     \item \textbf{AVL}: estende il BST, ridefinendo i metodi che gestiscono l'inserimento e le rotazioni, così da soddisfare le sue proprietà.
     \begin{itemize}
-        \item get\_balance(node): calcola il fattore di bilanciamento del nodo di interesse;
-        \item right\_rotate(node): gestisce la rotazione in senso orario. Il nodo passato rappresenta il perno su cui verrà eseguita la rotazione;
-        \item left\_rotate(node): gestisce la rotazione in senso antiorario;
+        \item get\_height(node): restituisce l'altezza di un nodo;
+        \item update\_height(node): aggiorna l'altezza di un nodo calcolandola sfruttando quella dei suoi figli;
+        \item left\_rotate(node): gestisce la rotazione in senso antiorario. Il nodo passato rappresenta il perno su cui verrà eseguita la rotazione;
+        \item right\_rotate(node): gestisce la rotazione in senso orario;
+        \item fixup(node): è chiamato dal metodo \textit{insert()} e si occupa di aggiornare le altezze dei nodi dopo che ne è stato aggiunto uno nuovo.
         \item insert(key): metodo pubblico che istanzia un nuovo nodo e gestisce l'inserimento;
-        \item insert\_recursive(node, key): è chiamato dal metodo \textit{insert()} e si occupa di scandire la struttura per trovare dove inserire effettivamente il nodo nell'albero.
     \end{itemize}
     \item \textbf{RBT}: estende il BST, ridefinendo i metodi che gestiscono l'inserimento e le rotazioni, così da soddisfare le sue proprietà.
     \begin{itemize}
-        \item get\_nil(): ridefinisce il metodo per adattarsi alle caratteristiche dell'albero;
-        \item is\_nil(node): ridefinisce il metodo per adattarsi alle caratteristiche dell'albero;
-        \item right\_rotate(node): gestisce la rotazione in senso orario;
+        \item get\_nil(): ridefinisce il metodo per sfruttare il nodo sentinella;
+        \item is\_nil(node): ridefinisce il metodo per sfruttare il nodo sentinella;
         \item left\_rotate(node): gestisce la rotazione in senso antiorario;
+        \item right\_rotate(node): gestisce la rotazione in senso orario;
         \item insert(key): istanzia un nuovo nodo e lo inserisce nella struttura sfruttando la modalità iterativa;
+        \item fixup(node): si occupa di riorganizzare l'albero effettuando le rotazioni e ridefinendo il colore del nodi.
+    \end{itemize}
+    \item \textbf{Tester}: classe che testa le strutture dati.
+    \begin{itemize}
+        \item insertion\_test(tree, seq): dati un albero e una sequenza numerica, inserisce uno ad uno tutti gli elementi cronometrando il tempo impiegato;
+        \item search\_test(tree, seq, search\_target): inserisce gli elementi di \textit{seq} nella struttura dati, dopodiché cronometra quanto tempo viene impiegato a cercare tutti i valori contenuti in \textit{search\_target};
+        \item test\_manager(): gestisce tutti i test, incrementando le dimensioni dei vettori in ingresso e inserendo tutti i risultati ricavati in un DataFrame.
     \end{itemize}
 \end{itemize}
 
@@ -150,19 +167,16 @@ I test e la generazione dei grafici sono stati effettuati tramite metodi \textit
 Tramite questo esperimento si vogliono verificare le complessità asintotiche esposte nella sezione teorica, misurando il tempo di esecuzione $T(n)$ al variare del numero di nodi $n$. L'esperimento è strutturato come segue.
 
 \bigskip
-Inserimento e ricerca sono indipendenti. Vengono effettuati quindi in tempi diversi e con sequenze numeriche in ingresso diverse (tranne per il caso peggiore, poiché questo è comune a entrambi).
-
-Ciascun test viene effettuato aumentando, ad ogni iterazione, il numero di elementi da inserire o analizzare. Il numero totale delle iterazioni indica il numero di punti che comporrà ciascun grafico, e questo viene stabilito a priori impostando il valore dei parametri dedicati.
-
-\bigskip
-Ogni iterazione restituirà il tempo impiegato sia per il caso peggiore che per quello medio.
-
-Il tempo che viene restituito deve dipendere il meno possibile dalle condizioni circostanziali che influenzano la macchina. Ogni iterazione verrà quindi ripetuta più volte, senza mai cambiare i dati in ingresso, replicando così le condizioni iniziali.
-
-Ciascun gruppo di tempi ottenuti tramite lo stesso input viene rielaborato, sfruttando l'operatore della mediana, e ottenendo quindi un unico valore che sia il meno possibile influenzato da condizioni esterne.
+Inserimento e ricerca sono indipendenti. Vengono effettuati quindi in tempi diversi e con ingressi diversi (tranne per il caso peggiore, poiché questo è comune a entrambi).
+Ciascun test viene effettuato aumentando, ad ogni iterazione, il numero di elementi da inserire o analizzare. Il numero totale delle iterazioni, insieme al "passo incrementale", indicano il numero di punti che comporrà ciascun grafico. Questo viene stabilito a priori impostando il valore dei parametri dedicati.
 
 \bigskip
-Una volta che ho finito le misurazioni temporali per ogni iterazione di ogni operazione, i risultati vengono salvati in un apposito foglio di calcolo, in modo da poter essere utilizzati per realizzare i grafici.
+Ogni iterazione restituirà il tempo di un singolo esperimento.
+Per renderlo il più indipendente possibile dalle circostanze che influenzano la macchina, ogni iterazione viene ripetuta più volte, senza mai cambiare i dati in ingresso e replicando le condizioni iniziali.
+Ogni gruppo di tempi ottenuti grazie allo stesso input viene rielaborato, sfruttando l'operatore della mediana, e ottenendo quindi un unico valore che sia il più possibile pulito.
+
+\bigskip
+Una volta finite le iterazioni di entrambe le tipologie, i risultati vengono salvati in un apposito foglio di calcolo, così da poter essere utilizzati per realizzare i grafici.
 
 \subsection{Scenari di Test e Complessità Attesa}
 Vengono definiti due scenari per confrontare le caratteristiche delle diverse strutture dati:
@@ -172,20 +186,17 @@ Vengono inseriti elementi in ordine strettamente crescente ($0, 1, ... , n$).
 \begin{itemize}
     \item \textbf{BST:} Data l'assenza di controlli, l'albero dovrebbe degenerare, raggiungendo un'altezza pari al numero di nodi inseriti $h=n$. Il risultato asintotico, sia per la costruzione che per la ricerca, sarà $O(n)$, mentre l'altezza sarà $\theta(n)$
     \item \textbf{RBT e AVL:} Le strutture dovrebbero bilanciarsi grazie alle rotazioni, mantenendo un'altezza logaritmica e quindi prestazioni asintotiche pari a $O(\log n)$. Questo permetterà di mantenere un tempo logaritmico sia per l'inserimento che per la ricerca.
-    
     I tempi per le due operazioni saranno estremamente inferiori rispetto a un comune BST.
 \end{itemize}
 
 \subsubsection*{Scenario B: Sequenza Casuale (Caso Medio)}
 Vengono inseriti elementi casuali. Il BST dovrebbe quindi auto bilanciarsi nel lungo periodo. Il risultato atteso è che tutte le strutture (BST, AVL e RBT) mantengano un'altezza logaritmica, con prestazioni comparabili $O(\log n)$.
-
 Per quanto riguarda l'inserimento, i tempi per BST potrebbero essere anche più bassi, in quanto l'assenza di controlli e rotazioni dovrebbe compensare il fatto che la struttura non sia perfettamente bilanciata.
-
 Nel caso della ricerca, i tempi saranno a favore dell'albero che è bilanciato meglio. Da AVL mi aspetto quindi i tempi più bassi, seguito da RBT e, più distaccato, BST.
 
 \clearpage
 \subsection{Tabella riassuntiva}
-La Tabella che segue riassume i risultati asintotici attesi e che dovranno essere verificati tramite i grafici derivanti dai test.
+La Tabella che segue riassume i risultati asintotici che dovranno essere verificati tramite i grafici generati sulla base dei test.
 
 \begin{table}[h!]
     \centering
@@ -248,7 +259,6 @@ In generale, gli AVL hanno una struttura rigida da realizzare, ma ottimizzano lo
 \end{figure}
 
 Come ipotizzato in partenza, il caso peggiore ha fatto degenerare il BST, portando a tempi sempre peggiori con l'aumentare degli elementi ospitati nella struttura.
-
 Nel caso generale, invece, l'assenza di controlli ha giocato a suo favore, portando a tempi di inserimento più bassi rispetto alle altre due tipologie.
 
 \subsection{Altezza}
@@ -313,7 +323,6 @@ Osservando i risultati dei test effettuati, possiamo notare che, per quanto rigu
 
 \bigskip
 Analizzando invece il caso medio, l'albero binario di ricerca tende a replicare i vantaggi delle altre due tipologie di alberi, talvolta anche con miglioramenti, come nel caso dell'inserimento.
-
 Questo lo rende quindi una struttura dati molto valida ed efficiente, specialmente se si punta alla semplicità, purché l'input che gli si fornisce sia il più possibile casuale.
 
 \bigskip
