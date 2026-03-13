@@ -3,15 +3,15 @@ from src.BST import BST
 
 class AVL(BST):
     # gestione altezza
-    def tree_height(self, node):
+    def get_height(self, node):
         if node is None:
             return 0
         return getattr(node, 'h', 1)
 
     def update_height(self, node):
         if node is not None:
-            left_h = self.tree_height(node.left)
-            right_h = self.tree_height(node.right)
+            left_h = self.get_height(node.left)
+            right_h = self.get_height(node.right)
             node.h = 1 + max(left_h, right_h)
 
     # rotazione sinistra
@@ -63,15 +63,15 @@ class AVL(BST):
         curr = node.p
         while curr != self.get_nil():
             self.update_height(curr)
-            balance = self.tree_height(curr.left) - self.tree_height(curr.right)
+            balance = self.get_height(curr.left) - self.get_height(curr.right)
 
             if balance == 2:
-                if (self.tree_height(curr.left.left) - self.tree_height(curr.left.right)) == -1:
+                if (self.get_height(curr.left.left) - self.get_height(curr.left.right)) == -1:
                     self.left_rotate(curr.left)
                 self.right_rotate(curr)
                 curr = curr.p
             elif balance == -2:
-                if (self.tree_height(curr.right.left) - self.tree_height(curr.right.right)) == 1:
+                if (self.get_height(curr.right.left) - self.get_height(curr.right.right)) == 1:
                     self.right_rotate(curr.right)
                 self.left_rotate(curr)
                 curr = curr.p

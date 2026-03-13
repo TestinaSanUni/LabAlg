@@ -31,7 +31,6 @@
 
 \subsection{Caso di studio}
 In questa relazione verranno analizzate e confrontate le prestazioni di tre diverse strutture dati utilizzate per la gestione di insiemi dinamici. Le strutture che verranno analizzate sono: gli \textbf{Alberi Binari di Ricerca (BST)}, gli alberi \textbf{AVL} e gli \textbf{Alberi Rosso-Neri (RBT)}.
-Un obiettivo fondamentale di ogni struttura dati è la gestione efficiente dei dati che ospiterà. Sebbene i BST offrano una struttura semplice e intuitiva per l'inserimento e la ricerca, le prestazioni ottenute dipendono fortemente dall'ordine dei dati in ingresso.
 
 \bigskip
 L'esperimento mira a verificare sperimentalmente le complessità temporali delle operazioni di \textbf{inserimento} e di \textbf{ricerca}, mettendo a confronto le tre strutture dati negli scenari del caso peggiore e del caso medio.
@@ -52,15 +51,18 @@ Le caratteristiche hardware della macchina utilizzata per svolgere i test sono:
 
 \section{Teoria}
 Un albero è una struttura dati composta da un insieme di \textbf{nodi} e \textbf{archi}. Ogni nodo rappresenta un elemento dell'albero ed è composto da una chiave, che lo identifica univocamente, e da più puntatori, che rappresentano gli archi e offrono un collegamento verso altri nodi.
+
 Un nodo è \textbf{figlio} se collegato direttamente a un altro di un livello superiore, detto \textbf{padre}.
 
 \bigskip
 Il nodo principale, da cui ha origine l'intera struttura, prende il nome di \textbf{radice}. Ogni nodo che non ha figli viene detto \textbf{foglia}.
+
 Si dice \textbf{cammino} l'insieme di nodi e archi che, partendo da un nodo, devono essere attraversati per raggiungerne un altro. La lunghezza del cammino più lungo rappresenta l'\textbf{altezza} dell'albero e viene misurata contando il numero di nodi che si incontrano lungo quel cammino (parte dalla radice e giunge a una foglia).
 
 \subsection{Binary Search Tree (BST)}
-Un Albero Binario di Ricerca è un tipo particolare di albero specializzato per la ricerca di valori.
-Ogni nodo avrà un puntatore sinistro che permette il collegamento a un \textbf{sottoalbero} contenente solo valori minori e uno destro che permette il collegamento a un sottoalbero contenente solo valori maggiori.
+Un Albero Binario di Ricerca è un tipo particolare di albero specializzato nella ricerca di valori.
+
+Ogni nodo avrà un puntatore sinistro che permette il collegamento a un \textbf{sottoalbero} contenente solo valori minori e uno destro che consente il collegamento a un sottoalbero contenente solo valori maggiori.
 
 \bigskip
 Le operazioni di base richiedono un tempo proporzionale all'altezza $h$ dell'albero, ovvero $O(h)$.
@@ -79,11 +81,11 @@ con h che indica l'altezza di un nodo. Perché un albero sia AVL, deve valere ch
 \subsection{Red-Black Tree (RBT)}
 Gli alberi Rosso-Neri hanno un funzionamento simile a quello degli AVL, ma il bilanciamento viene effettuato secondo limiti meno restrittivi. Ogni nodo contiene un bit supplementare di informazione che indica il colore (rosso o nero). Un albero Rosso-Nero, oltre a soddisfare le caratteristiche di un BST, deve soddisfare le seguenti proprietà:
 \begin{enumerate}
-    \item La radice è nera.
-    \item Ogni nodo è rosso o nero.
-    \item Ogni foglia (NIL) è nera.
-    \item Se un nodo è rosso, entrambi i suoi figli sono neri (non possono esserci due nodi rossi consecutivi).
-    \item Per ogni nodo, tutti i cammini semplici che scendono verso le foglie discendenti contengono lo stesso numero di nodi neri.
+    \item La radice è nera;
+    \item Ogni nodo è rosso o nero;
+    \item Ogni foglia (NIL) è nera;
+    \item Se un nodo è rosso, entrambi i suoi figli sono neri (non possono esserci due nodi rossi consecutivi);
+    \item Per ogni nodo, tutti i cammini semplici che scendono verso le foglie contengono lo stesso numero di nodi neri.
 \end{enumerate}
 In questo modo abbiamo la garanzia che il cammino più lungo non sia mai maggiore del doppio del cammino più breve. L'altezza dell'albero è perciò limitata a $2\lg(n+1)$, assicurando che il limite asintotico delle operazioni rimanga logaritmico anche nel caso peggiore. Il limite è pari a $O(\log n)$.
 
@@ -97,8 +99,10 @@ In questo modo abbiamo la garanzia che il cammino più lungo non sia mai maggior
 
 \subsection{Schema delle classi}
 Le classi create sono per l'implementazione delle strutture dati e per svolgere i test.
-Il salvataggio dei dati e la generazione dei grafici sono stati effettuati tramite metodi \textit{standalone}, in quanto non è necessario salvarne uno stato.
-La classe nodo è unica per tutte le tipologie di albero e include tutti gli attributi necessari al corretto funzionamento delle strutture. Si è preferito utilizzare una sola tipologia di nodo in modo da semplificare la progettazione.
+Il salvataggio dei dati e la generazione dei grafici sono stati effettuati tramite metodi \textbf{standalone}, in quanto non è necessario salvarne uno stato.
+
+La classe \textit{Nodo} è unica per tutte le tipologie di albero e include tutti gli attributi necessari al corretto funzionamento delle strutture. Questo mira a semplificare la progettazione.
+
 Per questioni di lettura, il colore dei nodi degli RBT è indicato da una stringa e non da una variabile booleana.
 
 \begin{figure}[H]
@@ -108,7 +112,7 @@ Per questioni di lettura, il colore dei nodi degli RBT è indicato da una string
     \label{fig:placeholder}
 \end{figure}
 
-Il cuore del programma è rappresentato dalle classi presenti nell'immagine. Permettono l'utilizzo delle strutture dati e implementano metodi mirati alla raccolta dei dati per i test.
+Il cuore del programma è rappresentato dalle classi presenti nell'immagine. Permettono l'utilizzo delle strutture dati e implementano metodi mirati (\textit{insert} e \textit{search}) per la raccolta dei dati per i test.
 
 \begin{figure}[H]
     \centering
@@ -117,13 +121,16 @@ Il cuore del programma è rappresentato dalle classi presenti nell'immagine. Per
     \label{fig:placeholder}
 \end{figure}
 
-Questa classe è stata implementata in modo da gestire nel miglior modo possibile i test da effettuare. Questa classe si occupa di cronometrare il tempo che impiega ciascun albero per portare a termine le operazioni di inserimento e ricerca.
-Ogni volta che viene lanciato un test, questo viene ripetuto più volte, così da ottenere un risultato che sia il più possibile pulito ed indipendente dalle caratteristiche della macchina.
+Questa classe è stata implementata in modo da gestire al meglio i test da effettuare. Si occupa di cronometrare il tempo che impiega ciascun albero per portare a termine le operazioni di inserimento e ricerca.
+
+Ogni volta che viene lanciato un test, questo viene ripetuto più volte, così da ottenere un risultato che sia il più possibile pulito e indipendente dalle caratteristiche della macchina.
 
 \subsection{Metodi implementativi}
 \begin{itemize}
-    \item \textbf{Node}: è la classe che definisce tutte le informazioni che ogni nodo generico può contenere.
-    \item \textbf{BST}: Binary Search Tree. E' la struttura dati più semplice e intuitiva, realizzata in modo più generale possibile così da poterla estendere per le altre due strutture dati.
+    \item \textbf{Node}: è la classe che definisce tutte le informazioni che ogni nodo generico può contenere. Contiene pertanto la chiave, ovvero il valore numerico, i puntatori ai figli sinistro e destro, il puntatore al padre, l'altezza a cui si trova e infine il colore.
+
+    Dato che il nodo è comune, alcuni attributi rimarranno inutilizzati se l'informazione non è utile per la gestione di tale struttura (\textit{Es: il colore per BST e AVL}.
+    \item \textbf{BST}: Binary Search Tree. E' la struttura dati più semplice e intuitiva, realizzata nel modo più generale possibile così da poterla estendere per le altre due strutture dati.
     \begin{itemize}
         \item get\_nil(): metodo ausiliario che, in base al tipo di albero che lo chiama, restituisce il valore nullo appropriato (None o \textbf{nodo sentinella});
         \item is\_nil(node): metodo ausiliario booleano che indica se il puntatore al nodo che viene passato è nullo oppure no, secondo il valore appropriato;
@@ -164,19 +171,22 @@ Ogni volta che viene lanciato un test, questo viene ripetuto più volte, così d
 
 \clearpage
 \section{Esperimento e risultati attesi}
-Tramite questo esperimento si vogliono verificare le complessità asintotiche esposte nella sezione teorica, misurando il tempo di esecuzione $T(n)$ al variare del numero di nodi $n$. L'esperimento è strutturato come segue.
+Tramite questo esperimento si vogliono verificare le complessità asintotiche esposte nella sezione teorica, misurando il tempo di esecuzione $T(n)$ per le operazioni di \textit{inserimento} e \textit{ricerca}, al variare del numero di nodi $n$. L'esperimento è strutturato come segue.
 
 \bigskip
-Inserimento e ricerca sono indipendenti. Vengono effettuati quindi in tempi diversi e con ingressi diversi (tranne per il caso peggiore, poiché questo è comune a entrambi).
-Ciascun test viene effettuato aumentando, ad ogni iterazione, il numero di elementi da inserire o analizzare. Il numero totale delle iterazioni, insieme al "passo incrementale", indicano il numero di punti che comporrà ciascun grafico. Questo viene stabilito a priori impostando il valore dei parametri dedicati.
+Inserimento e ricerca sono indipendenti. Vengono effettuati quindi in tempi diversi e con ingressi diversi e randomici (tranne per il caso peggiore, poiché questo è comune a entrambi).
+
+Ciascun test viene effettuato aumentando, ad ogni iterazione, il numero di elementi in ingresso. Il numero totale delle iterazioni, insieme al "passo incrementale", indicano il numero di punti che comporrà ciascun grafico. Questo viene stabilito a priori impostando il valore dei parametri dedicati.
 
 \bigskip
 Ogni iterazione restituirà il tempo di un singolo esperimento.
-Per renderlo il più indipendente possibile dalle circostanze che influenzano la macchina, ogni iterazione viene ripetuta più volte, senza mai cambiare i dati in ingresso e replicando le condizioni iniziali.
-Ogni gruppo di tempi ottenuti grazie allo stesso input viene rielaborato, sfruttando l'operatore della mediana, e ottenendo quindi un unico valore che sia il più possibile pulito.
+
+Per renderlo il più indipendente possibile dalle circostanze che influenzano la macchina, ogni iterazione viene ripetuta più volte, senza mai cambiare i dati in ingresso, replicando quindi le condizioni iniziali.
+
+Ogni gruppo di tempi ottenuti grazie allo stesso input viene rielaborato, sfruttando l'operatore della \textbf{mediana} e ottenendo quindi un unico valore che sia il più possibile pulito.
 
 \bigskip
-Una volta finite le iterazioni di entrambe le tipologie, i risultati vengono salvati in un apposito foglio di calcolo, così da poter essere utilizzati per realizzare i grafici.
+Una volta finite le iterazioni per entrambe le tipologie, i risultati vengono salvati in un apposito foglio di calcolo, così da poter essere utilizzati per realizzare i grafici.
 
 \subsection{Scenari di Test e Complessità Attesa}
 Vengono definiti due scenari per confrontare le caratteristiche delle diverse strutture dati:
@@ -191,8 +201,10 @@ Vengono inseriti elementi in ordine strettamente crescente ($0, 1, ... , n$).
 
 \subsubsection*{Scenario B: Sequenza Casuale (Caso Medio)}
 Vengono inseriti elementi casuali. Il BST dovrebbe quindi auto bilanciarsi nel lungo periodo. Il risultato atteso è che tutte le strutture (BST, AVL e RBT) mantengano un'altezza logaritmica, con prestazioni comparabili $O(\log n)$.
-Per quanto riguarda l'inserimento, i tempi per BST potrebbero essere anche più bassi, in quanto l'assenza di controlli e rotazioni dovrebbe compensare il fatto che la struttura non sia perfettamente bilanciata.
-Nel caso della ricerca, i tempi saranno a favore dell'albero che è bilanciato meglio. Da AVL mi aspetto quindi i tempi più bassi, seguito da RBT e, più distaccato, BST.
+
+Per quanto riguarda l'inserimento, i tempi per il BST potrebbero essere anche più bassi, in quanto l'assenza di controlli e rotazioni dovrebbe compensare il fatto che la struttura non sia perfettamente bilanciata.
+
+Nel caso della ricerca, i tempi saranno a favore dell'albero che è bilanciato meglio. Da AVL mi aspetto quindi i tempi più bassi, seguito da RBT e, poco distante, BST.
 
 \clearpage
 \subsection{Tabella riassuntiva}
@@ -228,7 +240,11 @@ La Tabella che segue riassume i risultati asintotici che dovranno essere verific
     \end{tabular}
 \end{table}
 
-In generale, gli AVL hanno una struttura rigida da realizzare, ma ottimizzano lo spazio. Gli RBT, invece, sono più flessibili per quanto riguarda i controlli, ma l'organizzazione dei dati in memoria sarà peggiore. Nonostante i tempi effettivi siano molto simili, mi aspetto che gli AVL siano migliori per la ricerca, mentre gli RBT per l'inserimento.
+In generale, gli AVL hanno una struttura rigida da realizzare, ma ottimizzano lo spazio e quindi i collegamenti tra i nodi.
+
+I BST, invece, non hanno controlli. Pertanto, anche se l'organizzazione dei dati in memoria sarà peggiore, asintoticamente mi aspetto che siano i più veloci per quanto riguarda l'inserimento.
+
+Nonostante i tempi effettivi siano molto simili, i BST dovrebbero offrire il giusto compromesso per entrambe le operazioni.
 
 
 % ===================================================================================
@@ -259,6 +275,7 @@ In generale, gli AVL hanno una struttura rigida da realizzare, ma ottimizzano lo
 \end{figure}
 
 Come ipotizzato in partenza, il caso peggiore ha fatto degenerare il BST, portando a tempi sempre peggiori con l'aumentare degli elementi ospitati nella struttura.
+
 Nel caso generale, invece, l'assenza di controlli ha giocato a suo favore, portando a tempi di inserimento più bassi rispetto alle altre due tipologie.
 
 \subsection{Altezza}
@@ -281,12 +298,12 @@ Nel caso generale, invece, l'assenza di controlli ha giocato a suo favore, porta
     \label{fig:coppia_immagini}
 \end{figure}
 
-La differenza di organizzazione dei dati in memoria è molto evidente. Si notano le carenze di BST, specialmente nel caso peggiore, da cui si evince che la crescita dell'altezza è lineare rispetto al numero dei dati in ingresso.
+La differenza di organizzazione dei dati in memoria è molto evidente. Si notano le carenze del BST, specialmente nel caso peggiore, da cui si evince che la crescita dell'altezza è lineare rispetto al numero dei dati in ingresso.
 
 \bigskip
 Nonostante le diverse implementazioni di AVL e RBT, la loro efficienza nel gestire al meglio lo spazio richiesto è molto simile. Questo dipende probabilmente dalla mole non troppo elevata dei dati da inserire.
 
-Il grafico generato nel caso peggiore permette di visualizzare meglio le qualità della proprietà di bilanciamento implementata in AVL.
+Il grafico generato nel caso peggiore permette di visualizzare meglio le qualità della proprietà di bilanciamento implementata negli AVL.
 
 \subsection{Ricerca}
 \begin{figure}[H]
@@ -323,6 +340,7 @@ Osservando i risultati dei test effettuati, possiamo notare che, per quanto rigu
 
 \bigskip
 Analizzando invece il caso medio, l'albero binario di ricerca tende a replicare i vantaggi delle altre due tipologie di alberi, talvolta anche con miglioramenti, come nel caso dell'inserimento.
+
 Questo lo rende quindi una struttura dati molto valida ed efficiente, specialmente se si punta alla semplicità, purché l'input che gli si fornisce sia il più possibile casuale.
 
 \bigskip

@@ -7,4 +7,4 @@ class Node:
 
         self.color = 'RED' # RED o BLACK
 
-        self.h = 0
+        self.h = 1

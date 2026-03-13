@@ -68,9 +68,9 @@ def graph(df, title, cols, name, y_label):
 
 # MAIN
 if __name__ == "__main__":
-    pull_size = 1000 # numero massimo di elementi da campionare
-    num_test = 1 # qty test per ricavare la media
-    increment = 200 # passo incrementale (definisce densità dei punti)
+    pull_size = 3000 # numero massimo di elementi da campionare
+    num_test = 10 # qty test per ricavare la media
+    increment = 100 # passo incrementale (definisce densità dei punti)
     max_value = 10000 # valore massimo che una chiave può avere
 
     tester = Tester(pull_size, num_test, increment, max_value)
