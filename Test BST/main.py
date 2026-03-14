@@ -39,6 +39,8 @@ def graph(df, title, cols, name, y_label):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_folder = os.path.join(script_dir, "plots")
 
+    os.makedirs(output_folder, exist_ok = True)
+
     plt.figure(figsize = (10, 7))
     plt.rcParams.update({'font.size': 22})
 
@@ -68,8 +70,8 @@ def graph(df, title, cols, name, y_label):
 
 # MAIN
 if __name__ == "__main__":
-    pull_size = 3000 # numero massimo di elementi da campionare
-    num_test = 10 # qty test per ricavare la media
+    pull_size = 1000 # numero massimo di elementi da campionare
+    num_test = 1 # qty test per ricavare la media
     increment = 100 # passo incrementale (definisce densità dei punti)
     max_value = 10000 # valore massimo che una chiave può avere
 
